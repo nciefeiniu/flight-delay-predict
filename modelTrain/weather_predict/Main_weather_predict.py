@@ -111,11 +111,11 @@ def weather_predict_single(airportId, engine, session, isDeparture):
     all_wind = []
     all_windSpeed = []
     if isDeparture:
-        sql = "DELETE FROM departureWeather"
+        sql = "DELETE FROM departureweather"
         session.execute(sql)
         session.commit()
     else:
-        sql = "DELETE FROM arrivalWeather"
+        sql = "DELETE FROM arriveweather"
         session.execute(sql)
         session.commit()
     
@@ -130,13 +130,13 @@ def weather_predict_single(airportId, engine, session, isDeparture):
         print(value)
         if isDeparture == True:
             # 删除departureWeather表中的所有数据
-            sql = "insert into departureWeather values ({})".format(value)
+            sql = "insert into departureweather values ({})".format(value)
             session.execute(sql)
             session.commit()
             session.close()
         else:
             # 删除arrivalWeather表中的所有数据
-            sql = "insert into arriveWeather values ({})".format(value)
+            sql = "insert into arriveweather values ({})".format(value)
             session.execute(sql)
             session.commit()
             session.close()

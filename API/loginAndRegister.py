@@ -5,12 +5,7 @@ from sqlalchemy.orm import sessionmaker
 # 配置数据库
 from sql import querySomething, queryAllthing
 
-hostname = '8.141.236.100'
-port = '3306'
-database = 'db01'
-username = 'heyi'
-pwd = 'HeYi1456'
-dburl = 'mysql+mysqldb://{}:{}@{}:{}/{}'.format(username, pwd, hostname, port, database)
+from config import dburl
 
 # 创建engine和session
 engine = create_engine(dburl, echo=True)

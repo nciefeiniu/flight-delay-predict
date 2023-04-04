@@ -3,17 +3,10 @@ from sqlalchemy.orm import sessionmaker
 from modelTrain.weather_predict.Main_weather_predict import weather_predict_single
 from modelTrain.predict.useModel import predict
 from math import radians, cos, sin, asin, sqrt
-import pandas as pd
-import datetime
 
-# 配置数据库
-hostname = '8.141.236.100'
-port = '3306'
-database = 'db01'
-username = 'heyi'
-pwd = 'HeYi1456'
-dburl = 'mysql+mysqldb://{}:{}@{}:{}/{}'.format(username, pwd, hostname, port, database)
-# 创建数据库连接对象
+from config import dburl
+
+
 engine = create_engine(dburl, echo=True)
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -48,36 +41,36 @@ def setDepartureAirport(departureAirport):
     # 起始机场天气预测
     isDeparture = True
 
-    # weather_predict_single(departureAirport, engine, session, isDeparture)
+    weather_predict_single(departureAirport, engine, session, isDeparture)
 
-    # 暂时改为本地填充！！！！！！
-    # 获取今天的日期，形式为dd/mm/yyyy
-    today = datetime.datetime.now().strftime('%d/%m')
-    today = str(today) + '/2016'
+    # # 暂时改为本地填充！！！！！！
+    # # 获取今天的日期，形式为dd/mm/yyyy
+    # today = datetime.datetime.now().strftime('%d/%m')
+    # today = str(today) + '/2016'
+    #
+    # # 读取weather/对应的机场.csv文件
+    # df = pd.read_csv('API/weather/' + departureAirport + '.csv')
+    # # 去除空行
+    # df = df.dropna(axis=0, how='any')
+    #
+    # # 找到df的Time列中为today的行数
+    # index = df[df['Time'] == today].index.tolist()
+    # # 取出该行以及下6行的数据
+    # df = df.iloc[index[0]:index[0] + 7, :]
+    #
+    # # 删除原有的departureWeather表中的所有数据
+    # sql = 'delete from departureWeather'
+    # session.execute(sql)
+    # session.commit()
 
-    # 读取weather/对应的机场.csv文件
-    df = pd.read_csv('API/weather/' + departureAirport + '.csv')
-    # 去除空行
-    df = df.dropna(axis=0, how='any')
-
-    # 找到df的Time列中为today的行数
-    index = df[df['Time'] == today].index.tolist()
-    # 取出该行以及下6行的数据
-    df = df.iloc[index[0]:index[0] + 7, :]
-
-    # 删除原有的departureWeather表中的所有数据
-    sql = 'delete from departureWeather'
-    session.execute(sql)
-    session.commit()
-
-    # 将df insert到数据库
-    for i in range(len(df)):
-        sql = 'insert into departureWeather(weatherId, avg_temp, max_temp, min_temp, prec, pressure, wind_dir, wind_sp, year, month, day, normal_prob, mild_prob, moderate_prob, serious_prob) values(\'{}\',{},{},{},{},{},{},{},{},{},{},{},{},{},{})'.format(
-            departureAirport, df['Ave_t'].values[i], df['Max_t'].values[i], df['Min_t'].values[i], df['Prec'].values[i],
-            df['SLpress'].values[i], df['Winddir'].values[i], df['Windsp'].values[i], 2022,
-            str(df['Time'].values[i]).split('/')[1], str(df['Time'].values[i]).split('/')[0], 0, 0, 0, 0)
-        session.execute(sql)
-        session.commit()
+    # # 将df insert到数据库
+    # for i in range(len(df)):
+    #     sql = 'insert into departureWeather(weatherId, avg_temp, max_temp, min_temp, prec, pressure, wind_dir, wind_sp, year, month, day, normal_prob, mild_prob, moderate_prob, serious_prob) values(\'{}\',{},{},{},{},{},{},{},{},{},{},{},{},{},{})'.format(
+    #         departureAirport, df['Ave_t'].values[i], df['Max_t'].values[i], df['Min_t'].values[i], df['Prec'].values[i],
+    #         df['SLpress'].values[i], df['Winddir'].values[i], df['Windsp'].values[i], 2022,
+    #         str(df['Time'].values[i]).split('/')[1], str(df['Time'].values[i]).split('/')[0], 0, 0, 0, 0)
+    #     session.execute(sql)
+    #     session.commit()
 
     sql = 'select * from departureWeather'
     rs = session.execute(sql).fetchall()
@@ -104,37 +97,37 @@ def setArriveAirport(arriveAirport):
 
     # 到达机场天气预测
     isDeparture = False
-    # weather_predict_single(arriveAirport, engine, session, isDeparture)
+    weather_predict_single(arriveAirport, engine, session, isDeparture)
 
-    # 暂时改为本地填充！！！！！！
-    # 获取今天的日期，形式为dd/mm/yyyy
-    today = datetime.datetime.now().strftime('%d/%m')
-    today = str(today) + '/2016'
-
-    # 读取weather/对应的机场.csv文件
-    df = pd.read_csv('API/weather/' + arriveAirport + '.csv')
-    # 去除空行
-    df = df.dropna(axis=0, how='any')
-    print(today)
-    # 找到df的Time列中为today的行数
-    index = df[df['Time'] == today].index.tolist()
-    # 取出该行以及下6行的数据
-    df = df.iloc[index[0]:index[0] + 7, :]
-    print(df['Time'].values[0])
-    # 删除原有的departureWeather表中的所有数据
-    sql = 'delete from arriveWeather'
-    session.execute(sql)
-    session.commit()
-
-    # 将df insert到数据库
-    print(len(df))
-    for i in range(len(df)):
-        sql = 'insert into arriveWeather(weatherId, avg_temp, max_temp, min_temp, prec, pressure, wind_dir, wind_sp, year, month, day, normal_prob, mild_prob, moderate_prob, serious_prob) values(\'{}\',{},{},{},{},{},{},{},{},{},{},{},{},{},{})'.format(
-            arriveAirport, df['Ave_t'].values[i], df['Max_t'].values[i], df['Min_t'].values[i], df['Prec'].values[i],
-            df['SLpress'].values[i], df['Winddir'].values[i], df['Windsp'].values[i], 2022,
-            str(df['Time'].values[i]).split('/')[1], str(df['Time'].values[i]).split('/')[0], 0, 0, 0, 0)
-        session.execute(sql)
-        session.commit()
+    # # 暂时改为本地填充！！！！！！
+    # # 获取今天的日期，形式为dd/mm/yyyy
+    # today = datetime.datetime.now().strftime('%d/%m')
+    # today = str(today) + '/2016'
+    #
+    # # 读取weather/对应的机场.csv文件
+    # df = pd.read_csv('API/weather/' + arriveAirport + '.csv')
+    # # 去除空行
+    # df = df.dropna(axis=0, how='any')
+    # print(today)
+    # # 找到df的Time列中为today的行数
+    # index = df[df['Time'] == today].index.tolist()
+    # # 取出该行以及下6行的数据
+    # df = df.iloc[index[0]:index[0] + 7, :]
+    # print(df['Time'].values[0])
+    # # 删除原有的departureWeather表中的所有数据
+    # sql = 'delete from arriveWeather'
+    # session.execute(sql)
+    # session.commit()
+    #
+    # # 将df insert到数据库
+    # print(len(df))
+    # for i in range(len(df)):
+    #     sql = 'insert into arriveWeather(weatherId, avg_temp, max_temp, min_temp, prec, pressure, wind_dir, wind_sp, year, month, day, normal_prob, mild_prob, moderate_prob, serious_prob) values(\'{}\',{},{},{},{},{},{},{},{},{},{},{},{},{},{})'.format(
+    #         arriveAirport, df['Ave_t'].values[i], df['Max_t'].values[i], df['Min_t'].values[i], df['Prec'].values[i],
+    #         df['SLpress'].values[i], df['Winddir'].values[i], df['Windsp'].values[i], 2022,
+    #         str(df['Time'].values[i]).split('/')[1], str(df['Time'].values[i]).split('/')[0], 0, 0, 0, 0)
+    #     session.execute(sql)
+    #     session.commit()
     
     sql = 'select * from arriveWeather'
     rs = session.execute(sql).fetchall()
