@@ -13,23 +13,6 @@
 </el-dropdown>
       </div>
       <div class="gl">
-      <el-dropdown>
-               <span class="el-dropdown-link">
-            团队成员<i class="el-icon-arrow-down el-icon--right"></i>
-          </span>
-      <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>项目经理：解世超</el-dropdown-item>
-          <el-dropdown-item>服务端工程师：何毅</el-dropdown-item>
-          <el-dropdown-item>服务端工程师：江顺</el-dropdown-item>
-          <el-dropdown-item>客户端工程师：陈泽锋</el-dropdown-item>
-          <el-dropdown-item>客户端工程师：蒋涵</el-dropdown-item>
-          <el-dropdown-item>数据库工程师：贺思超</el-dropdown-item>
-          <el-dropdown-item>
-              <el-link type="primary" href="https://github.com/Routhleck/flight-delay-predict">项目开源地址（仅供学习交流）
-              </el-link>
-          </el-dropdown-item>
-  </el-dropdown-menu>
-</el-dropdown>
       </div>
   </el-aside>
   <el-container>
@@ -119,9 +102,6 @@
       </el-table>
         </el-card>
     </el-main>
-      <el-footer class="managerFoot">
-          <div class="kaifa">国寄纵队小组开发出品</div>
-      </el-footer>
   </el-container>
 </el-container>
 </template>
