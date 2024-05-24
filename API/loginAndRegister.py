@@ -30,8 +30,11 @@ def login(idNum, password):
 
 
 # 注册接口
-def signup(id,password):
-    sql = "insert into user values ({},{},0)".format(id,password)
+def signup(id,password, is_admin=False):
+    if is_admin:
+        sql = f"insert into user values ('{id}','{password}',1)"
+    else:
+        sql = f"insert into user values ('{id}','{password}',0)"
     session.execute(sql)
     session.commit()
     session.close()

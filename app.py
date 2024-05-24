@@ -44,11 +44,12 @@ def doLogin():
 @cross_origin(supports_credentials=True)
 def dosignup():
     data = request.get_json()
-    id = '\'' + str(data.get('username'))+ '\''
     password = data.get('password')
-    print(id)
-    print(password)
-    confirm = signup(id, password)
+
+    if data.get('username') == 'admin':
+        confirm = signup(data['username'], password, True)
+    else:
+        confirm = signup(data['username'], password)
     print(confirm)
     return confirm
 
